@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<!-- Page Body Start-->
+<div class="page-body">
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Add Product</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row product-adding">
+                            <div class="col-xl-5 col-lg-6">
+                                <div class="add-product">
+                                    <div class="row">
+                                        <div class="col-xl-9 col-lg-8 col-sm-6 col-9">
+                                            <img src="~/assets/images/pro3/1.jpg" alt="Product Image" class="img-fluid image_zoom_1 blur-up lazyloaded">
+                                        </div>
+                                        <div class="col-xl-3 col-lg-4 col-sm-6 col-3">
+                                            <ul class="file-upload-product">
+                                                @for (int i = 0; i < 6; i++)
+                                                {
+                                                    <li>
+                                                        <div class="box-input-file">
+                                                            <input class="upload" type="file">
+                                                            <i class="fa fa-plus"></i>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-7 col-lg-6">
+                                <form class="needs-validation add-product-form" novalidate>
+                                    <div class="form">
+                                        <div class="form-group mb-3 row">
+                                            <label for="productTitle" class="col-xl-3 col-sm-4 col-form-label">Title :</label>
+                                            <div class="col-xl-8 col-sm-7">
+                                                <input class="form-control" id="productTitle" type="text" required 
+                                                       placeholder="Enter product title">
+                                                <div class="invalid-feedback">Please enter a product title.</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-3 row">
+                                            <label for="productPrice" class="col-xl-3 col-sm-4 col-form-label">Price :</label>
+                                            <div class="col-xl-8 col-sm-7">
+                                                <input class="form-control" id="productPrice" type="number" step="0.01" required 
+                                                       placeholder="Enter product price">
+                                                <div class="invalid-feedback">Please enter a valid price.</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-3 row">
+                                            <label for="productCode" class="col-xl-3 col-sm-4 col-form-label">Product Code :</label>
+                                            <div class="col-xl-8 col-sm-7">
+                                                <input class="form-control" id="productCode" type="text" required 
+                                                       placeholder="Enter product code">
+                                                <div class="invalid-feedback">Please enter a valid product code.</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-3 row">
+                                            <label for="productDescription" class="col-xl-3 col-sm-4 col-form-label">Description :</label>
+                                            <div class="col-xl-8 col-sm-7">
+                                                <textarea class="form-control" id="productDescription" rows="3" 
+                                                          placeholder="Enter product description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="offset-xl-3 offset-sm-4">
+                                        <button type="submit" class="btn btn-primary mr-2">Add Product</button>
+                                        <button type="button" class="btn btn-light">Discard</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+
+
+
+</div>
+
+@section Scripts {
+    <script>
+        // Basic form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+}

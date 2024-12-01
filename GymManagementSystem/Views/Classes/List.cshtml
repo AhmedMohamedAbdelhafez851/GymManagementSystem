@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Domains.Dtos.ClassDTO>
+<br />
+<br />
+<br />
+<br />
+<br />
+
+
+<h2>Class List</h2>
+<br />
+<br />
+<br />
+<br />
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Class Name</th>
+            <th>Schedule</th>
+            <th>Capacity</th>
+            <th>Trainer</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var classDto in Model)
+        {
+            <tr>
+                <td>@classDto.ClassName</td>
+                <td>@classDto.Schdule.ToString("g")</td>
+                <td>@classDto.Capacity</td>
+                <td>@classDto.Trainer?.TrainerName ?? "N/A"</td>
+                <td>
+                    <a href="/Classes/Edit/@classDto.ClassId" class="btn btn-primary">Edit</a>
+                    <a href="/Classes/Delete/@classDto.ClassId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

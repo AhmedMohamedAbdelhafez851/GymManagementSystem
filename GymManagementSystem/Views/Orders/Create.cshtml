@@ -1,0 +1,43 @@
+﻿@model Domains.Dtos.OrderDTO
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Create New Order</h2>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label for="Amount" class="form-label">Amount</label>
+            <input type="number" id="Amount" name="Amount" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="OrderDate" class="form-label">Order Date</label>
+            <input type="date" id="OrderDate" name="OrderDate" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="PaymentMethod" class="form-label">Payment Method</label>
+            <input type="text" id="PaymentMethod" name="PaymentMethod" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="ProductId" class="form-label">Product</label>
+            <select id="ProductId" name="ProductId" class="form-select" required>
+                @foreach (var product in ViewBag.Products)
+                {
+                    <option value="@product.ProductId">@product.Title</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="MemberShipsPlanId" class="form-label">Membership Plan</label>
+            <select id="MemberShipsPlanId" name="MemberShipsPlanId" class="form-select" required>
+                @foreach (var plan in ViewBag.MemberShipsPlans)
+                {
+                    <option value="@plan.MemberShipsPlanId">@plan.MemberShipPlanName</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Create Order</button>
+    </form>
+</div>

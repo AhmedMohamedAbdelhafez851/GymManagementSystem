@@ -1,0 +1,241 @@
+﻿@model IEnumerable<CustomerDTO>
+@{
+ViewData["Title"] = "Customer List";
+}
+<br /><br /><br /><br />
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 bg-white col-lg-2 p-0" id="sidebar">
+            <div>
+                <!-- Sidebar content -->
+                <ul class="list-group">
+                    <li class="">
+                        <a href="@Url.Action("Index", "Home")" class="text-white">Home</a>
+                    </li>
+                    <li class="list-group-item bg-white border-0">
+                        <a href="@Url.Action("List", "Customers")" class="text-white">Customers</a>
+                    </li>
+                    <!-- Add other sidebar items here -->
+                </ul>
+            </div>
+        </div>
+    <!-- Main Content Area -->
+    <div class="col-md-9 col-lg-10 mt-4">
+        <h1 class="mb-4 f-20">Customer List</h1>
+
+        <a class="btn btn-primary mb-3" asp-action="Create">Create New Customer</a>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Second Name</th>
+                        <th>Date of Birth</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Membership Plan</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var customer in Model)
+                    {
+                        <tr>
+                            <td>@customer.FirstName</td>
+                            <td>@customer.SecondName</td>
+                            <td>@customer.DateOfBirth.ToShortDateString()</td>
+                            <td>@customer.Phone</td>
+                            <td>@customer.Address</td>
+                            <td>@customer.MemberShipsPlan?.MemberShipPlanName</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning edit-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editCustomerModal"
+                                        data-id="@customer.CustomerId">
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteCustomerModal"
+                                        data-id="@customer.CustomerId">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Edit Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCustomerLabel">Edit Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCustomerForm" method="post">
+                    <input type="hidden" id="CustomerId" name="CustomerId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="FirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="FirstName" name="FirstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="SecondName" class="form-label">Second Name</label>
+                            <input type="text" class="form-control" id="SecondName" name="SecondName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="DateOfBirth" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="DateOfBirth" name="DateOfBirth" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="Phone" name="Phone" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="Address" name="Address" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="JoinDate" class="form-label">Join Date</label>
+                            <input type="date" class="form-control" id="JoinDate" name="JoinDate" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="MemberShipsPlanId" class="form-label">Membership Plan</label>
+                        <select class="form-select" id="MemberShipsPlanId" name="MemberShipsPlanId" required>
+                            @if (ViewBag.MemberShipsPlans != null)
+                            {
+                                foreach (var plan in ViewBag.MemberShipsPlans)
+                                {
+                                    <option value="@plan.MemberShipsPlanId">@plan.MemberShipPlanName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="editCustomerForm" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCustomerLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this customer?
+            </div>
+            <div class="modal-footer">
+                <form method="post" id="deleteCustomerForm">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts 
+{
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+const editModal = document.getElementById("editCustomerModal");
+        // Edit Modal - Load customer details dynamically
+        editModal.addEventListener("show.bs.modal", function (event) {
+            const button = event.relatedTarget;
+            const customerId = button.getAttribute("data-id");
+
+            // Fetch customer details
+            fetch(`/Customers/EditModal/${customerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Populate form fields
+                    document.getElementById("CustomerId").value = data.customerId;
+                    document.getElementById("FirstName").value = data.firstName;
+                    document.getElementById("SecondName").value = data.secondName;
+                    document.getElementById("DateOfBirth").value = data.dateOfBirth;
+                    document.getElementById("Phone").value = data.phone;
+                    document.getElementById("Address").value = data.address;
+                    document.getElementById("JoinDate").value = data.joinDate;
+                    
+                    // Set the correct membership plan
+                    const membershipSelect = document.getElementById("MemberShipsPlanId");
+                    membershipSelect.value = data.memberShipsPlanId;
+                })
+                .catch(error => console.error("Error loading customer details:", error));
+        });
+
+        // Handle form submission
+        const editCustomerForm = document.getElementById("editCustomerForm");
+        editCustomerForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const formData = new FormData(editCustomerForm);
+            const customerData = Object.fromEntries(formData.entries());
+
+            // Convert dates to ISO format
+            customerData.DateOfBirth = new Date(customerData.DateOfBirth).toISOString();
+            customerData.JoinDate = new Date(customerData.JoinDate).toISOString();
+            customerData.MemberShipsPlanId = parseInt(customerData.MemberShipsPlanId);
+            customerData.CustomerId = parseInt(customerData.CustomerId);
+
+            // Send AJAX request
+            fetch("/Customers/Edit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(customerData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close modal and reload page
+                    const modalInstance = bootstrap.Modal.getInstance(editModal);
+                    modalInstance.hide();
+                    location.reload();
+                } else {
+                    // Handle error
+                    alert("Failed to update customer: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the customer.");
+            });
+        });
+
+        // Delete Modal Setup
+        const deleteModal = document.getElementById("deleteCustomerModal");
+        deleteModal.addEventListener("show.bs.modal", function (event) {
+            const button = event.relatedTarget;
+            const customerId = button.getAttribute("data-id");
+
+            const form = document.getElementById("deleteCustomerForm");
+            form.action = `/Customers/Delete/${customerId}`;
+        });
+    });
+</script>
+}

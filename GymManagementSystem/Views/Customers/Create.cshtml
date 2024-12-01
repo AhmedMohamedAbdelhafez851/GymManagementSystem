@@ -1,0 +1,105 @@
+﻿@model Domains.Dtos.CustomerDTO
+@{
+    ViewData["Title"] = "Create Customer";
+}
+<br />
+<br />
+<br />
+<br />
+
+
+
+<div class="container-fluid bg-white">
+    <div class="row bg-white">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 p-0 bg-white" id="sidebar">
+            <div class="sidebar bg-white text-white">
+                <!-- Sidebar content -->
+                <ul class="list-group">
+                    <li class="list-group-item bg-white border-0">
+                        <a href="@Url.Action("Index", "Home")" class="text-white">Home</a>
+                    </li>
+                    
+
+                    <li class="list-group-item bg-white border-0">
+                        <a href="@Url.Action("List", "Customer")" class="text-white">Customers</a>
+                    </li>
+                    <!-- Add other sidebar items here -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="col-md-9 col-lg-10 mt-4">
+            <h1 style="font-size:revert">Create Customer</h1>
+
+            <form asp-action="Create" method="post" id="createForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="SecondName" class="form-label"></label>
+                            <input asp-for="SecondName" class="form-control" />
+                            <span asp-validation-for="SecondName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="DateOfBirth" class="form-label"></label>
+                            <input asp-for="DateOfBirth" class="form-control" type="date" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MemberShipsPlanId" class="form-label"></label>
+                            <select asp-for="MemberShipsPlanId" asp-items="@(new SelectList(ViewBag.MemberShipsPlans, "MemberShipsPlanId", "MemberShipPlanName"))" class="form-control"></select>
+                            <span asp-validation-for="MemberShipsPlanId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                        <a asp-action="List" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#createForm").validate(); // Initialize validation for the form
+        });
+    </script>
+}

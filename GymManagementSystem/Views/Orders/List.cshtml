@@ -1,0 +1,161 @@
+﻿@model IEnumerable<Domains.Dtos.OrderDTO>
+<br />
+<br />
+<br />
+<br />
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Orders</h2>
+    <div class="text-end mb-3">
+        <a asp-action="Create" class="btn btn-primary">Add New Order</a>
+    </div>
+
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Amount</th>
+                <th>Order Date</th>
+                <th>Payment Method</th>
+                <th>Product</th>
+                <th>Membership Plan</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.OrderId</td>
+                        <td>@order.Amount</td>
+                        <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>@order.PaymentMethod</td>
+                        <td>@order.Product?.Title  </td>
+                        <td>@order.MemberShipsPlan?.MemberShipPlanName </td>
+                        <td class="text-center">
+                            <!-- Edit button -->
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editOrderModal"
+                                    data-id="@order.OrderId" data-amount="@order.Amount"
+                                    data-date="@order.OrderDate.ToString("yyyy-MM-dd")"
+                                    data-payment="@order.PaymentMethod"
+                                    data-product-id="@order.ProductId"
+                                    data-plan-id="@order.MemberShipsPlanId">
+                                Edit
+                            </button>
+
+                            <!-- Delete form -->
+                            <form asp-action="Delete" asp-route-id="@order.OrderId" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No orders available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Editing -->
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editOrderModalLabel">Edit Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" id="OrderId" name="OrderId" />
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">Amount</label>
+                        <input type="number" id="Amount" name="Amount" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="OrderDate" class="form-label">Order Date</label>
+                        <input type="date" id="OrderDate" name="OrderDate" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="PaymentMethod" class="form-label">Payment Method</label>
+                        <input type="text" id="PaymentMethod" name="PaymentMethod" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ProductId" class="form-label">Product</label>
+                        <select id="ProductId" name="ProductId" class="form-select">
+                            @if (ViewBag.Products != null)
+                            {
+                                foreach (var product in ViewBag.Products)
+                                {
+                                    <option value="@product.ProductId">@product.Title</option>
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>No products available</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="MemberShipsPlanId" class="form-label">Membership Plan</label>
+                        <select id="MemberShipsPlanId" name="MemberShipsPlanId" class="form-select">
+                            @if (ViewBag.MemberShipsPlans != null)
+                            {
+                                foreach (var plan in ViewBag.MemberShipsPlans)
+                                {
+                                    <option value="@plan.MemberShipsPlanId">@plan.MemberShipPlanName</option>
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>No membership plans available</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <!-- jQuery (if needed for some compatibility reasons) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+   
+    <script>
+        // Populate modal with data for editing
+        $('#editOrderModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var orderId = button.data('id');
+            var amount = button.data('amount');
+            var orderDate = button.data('date');
+            var paymentMethod = button.data('payment');
+            var productId = button.data('product-id');
+            var planId = button.data('plan-id');
+
+            // Populate the modal fields
+            var modal = $(this);
+            modal.find('#OrderId').val(orderId);
+            modal.find('#Amount').val(amount);
+            modal.find('#OrderDate').val(orderDate);
+            modal.find('#PaymentMethod').val(paymentMethod);
+            modal.find('#ProductId').val(productId);
+            modal.find('#MemberShipsPlanId').val(planId);
+        });
+    </script>
+}

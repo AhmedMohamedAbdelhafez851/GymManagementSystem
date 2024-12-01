@@ -1,0 +1,35 @@
+﻿@model ClassDTO
+
+@{
+    ViewData["Title"] = "Create Class";
+}
+<br />
+
+
+<div class="container">
+    <h1>Create New Class</h1>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label>Class Name</label>
+            <input type="text" name="ClassName" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label>Schedule</label>
+            <input type="datetime-local" name="Schdule" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label>Capacity</label>
+            <input type="number" name="Capacity" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label>Trainer</label>
+            <select name="TrainerId" class="form-select">
+                @foreach (var trainer in (IEnumerable<TrainerDTO>)ViewBag.Trainers)
+                {
+                    <option value="@trainer.TrainerId">@trainer.TrainerName</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Create</button>
+    </form>
+</div>
