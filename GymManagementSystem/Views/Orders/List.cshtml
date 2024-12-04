@@ -2,64 +2,92 @@
 <br />
 <br />
 <br />
-<br />
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Orders</h2>
-    <div class="text-end mb-3">
-        <a asp-action="Create" class="btn btn-primary">Add New Order</a>
+@* @if (User.IsInRole("Trainer"))
+{ *@
+    
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 bg-light p-0 d-none d-md-block" id="sidebar">
+            <!-- Include shared layout sidebar here -->
+@*             @await Html.PartialAsync("_Sidebar")
+ *@        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="container mt-4">
+                <div style="background-color: white; padding: 20px; text-align: center">
+                    <h2 style="font-size: 24px; font-weight: bold; color: #343a40; display: inline-flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-list-alt" style="color: #007bff; font-size: 28px;"></i>
+                        Orders List
+                    </h2>
+                </div>
+                <br />
+                <div class="text-end mb-3">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Add New Order
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Amount</th>
+                                <th>Order Date</th>
+                                <th>Payment Method</th>
+                                <th>Product</th>
+                                <th>Membership Plan</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var order in Model)
+                                {
+                                    <tr>
+                                        <td>@order.OrderId</td>
+                                        <td>@order.Amount</td>
+                                        <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@order.PaymentMethod</td>
+                                        <td>@order.Product?.Title</td>
+                                        <td>@order.MemberShipsPlan?.MemberShipPlanName</td>
+                                        <td class="text-center">
+                                            <!-- Edit button -->
+                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editOrderModal"
+                                                    data-id="@order.OrderId" data-amount="@order.Amount"
+                                                    data-date="@order.OrderDate.ToString("yyyy-MM-dd")"
+                                                    data-payment="@order.PaymentMethod"
+                                                    data-product-id="@order.ProductId"
+                                                    data-plan-id="@order.MemberShipsPlanId">
+                                                <i class="bi bi-pencil-fill"></i>
+                                                Edit
+                                            </button>
+
+                                            <!-- Delete form -->
+                                            <form asp-action="Delete" asp-route-id="@order.OrderId" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm"> <i class="bi bi-trash3-fill"></i> Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">No orders available.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <table class="table table-hover table-bordered align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Order ID</th>
-                <th>Amount</th>
-                <th>Order Date</th>
-                <th>Payment Method</th>
-                <th>Product</th>
-                <th>Membership Plan</th>
-                <th class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                @foreach (var order in Model)
-                {
-                    <tr>
-                        <td>@order.OrderId</td>
-                        <td>@order.Amount</td>
-                        <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
-                        <td>@order.PaymentMethod</td>
-                        <td>@order.Product?.Title  </td>
-                        <td>@order.MemberShipsPlan?.MemberShipPlanName </td>
-                        <td class="text-center">
-                            <!-- Edit button -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editOrderModal"
-                                    data-id="@order.OrderId" data-amount="@order.Amount"
-                                    data-date="@order.OrderDate.ToString("yyyy-MM-dd")"
-                                    data-payment="@order.PaymentMethod"
-                                    data-product-id="@order.ProductId"
-                                    data-plan-id="@order.MemberShipsPlanId">
-                                Edit
-                            </button>
-
-                            <!-- Delete form -->
-                            <form asp-action="Delete" asp-route-id="@order.OrderId" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="7" class="text-center">No orders available.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>
 
 <!-- Modal for Editing -->
@@ -127,35 +155,22 @@
     </div>
 </div>
 
-@section Scripts
-{
-    <!-- jQuery (if needed for some compatibility reasons) -->
+@section Scripts {
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
-   
     <script>
-        // Populate modal with data for editing
         $('#editOrderModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var orderId = button.data('id');
-            var amount = button.data('amount');
-            var orderDate = button.data('date');
-            var paymentMethod = button.data('payment');
-            var productId = button.data('product-id');
-            var planId = button.data('plan-id');
-
-            // Populate the modal fields
+            var button = $(event.relatedTarget);
             var modal = $(this);
-            modal.find('#OrderId').val(orderId);
-            modal.find('#Amount').val(amount);
-            modal.find('#OrderDate').val(orderDate);
-            modal.find('#PaymentMethod').val(paymentMethod);
-            modal.find('#ProductId').val(productId);
-            modal.find('#MemberShipsPlanId').val(planId);
+
+            modal.find('#OrderId').val(button.data('id'));
+            modal.find('#Amount').val(button.data('amount'));
+            modal.find('#OrderDate').val(button.data('date'));
+            modal.find('#PaymentMethod').val(button.data('payment'));
+            modal.find('#ProductId').val(button.data('product-id'));
+            modal.find('#MemberShipsPlanId').val(button.data('plan-id'));
         });
     </script>
 }

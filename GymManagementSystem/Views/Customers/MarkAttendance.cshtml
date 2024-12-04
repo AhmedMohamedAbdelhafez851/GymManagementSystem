@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Mark Attendance";
+}
+
+<h2 style="margin-left:10cm">Mark Attendance</h2>
+
+<form style="margin-left:10cm" asp-action="MarkAttendanceWithFaceRecognition" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="faceImage">Upload Your Image:</label>
+        <input type="file" name="image" id="faceImage" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Mark Attendance</button>
+</form>

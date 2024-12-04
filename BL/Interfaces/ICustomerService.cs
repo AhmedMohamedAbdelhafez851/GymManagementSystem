@@ -15,5 +15,6 @@ namespace BL.Interfaces
         Task UpdateCustomerAsync(CustomerDTO customerDto);
         Task<List<MemberShipsPlanDTO>> GetAllMemberShipsPlansAsync();
         Task DeleteCustomerAsync(int customerId);  // New method for deleting a customer
+
     }
 }

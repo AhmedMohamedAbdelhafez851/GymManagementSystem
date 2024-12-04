@@ -1,0 +1,49 @@
+﻿@model Domains.Dtos.UserDTO.ManageRolesViewModel
+<br />
+<br />
+<br />
+<br /><br />
+<h2 style="text-align:center ; font-size:medium ; margin-left: 8cm">Create a New Role</h2>
+
+<form style="margin-left: 8cm" style="margin-left: 15cm" asp-action="CreateRole" method="post" class="mb-4">
+    <div class="mb-3">
+        <label for="NewRoleName" class="form-label">Role Name</label>
+        <input asp-for="NewRoleName" class="form-control" required />
+        <span asp-validation-for="NewRoleName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Role</button>
+</form>
+
+<h3>Existing Roles</h3>
+<table style="margin-left: 8cm" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Role ID</th>
+            <th>Role Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.Roles)
+        {
+            <tr>
+                <td>@role.Id</td>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <form asp-action="DeleteRole" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@role.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

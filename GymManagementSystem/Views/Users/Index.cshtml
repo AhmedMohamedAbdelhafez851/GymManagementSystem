@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Domains.ApplicationUser>
+
+@{
+    ViewData["Title"] = "User List";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<h2 style="margin-left: 7cm" class="fs-7 text-center">Users</h2>
+<div class="text-end">
+    <a asp-action="Create" class="btn btn-primary" style="margin-left: 7cm" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i>
+        Create New User
+    </a>
+</div>
+<br />
+
+
+<table style="margin-left: 7cm" class="table table-striped table-hover table-bordered align-middle" id="trainerTable" >
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr id="user-@user.Id">
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>
+                    @* Display user roles *@
+                    @if (ViewBag.UserRoles != null && ViewBag.UserRoles.ContainsKey(user.Id))
+                    {
+                        <span>@string.Join(", ", ViewBag.UserRoles[user.Id])</span>
+                    }
+                    else
+                    {
+                        <span>No roles assigned</span>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Roles" asp-action="ManageRoles" asp-route-userId="@user.Id" class="btn btn-info">Manage Roles</a> |
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning">Modify Profile</a> |
+                    <button class="btn btn-danger" onclick="deleteUser('@user.Id')">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function deleteUser(userId) {
+        if (confirm("Are you sure you want to delete this user?")) {
+            $.ajax({
+                url: '@Url.Action("DeleteConfirmed", "Users")',
+                type: 'POST',
+                data: {
+                    id: userId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $('#user-' + userId).remove(); // Remove the user row from the table
+                    } else {
+                        alert(response.message || "An error occurred while deleting the user.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        }
+    }
+</script>
+
+<!-- Add Anti-Forgery Token -->
+@Html.AntiForgeryToken()

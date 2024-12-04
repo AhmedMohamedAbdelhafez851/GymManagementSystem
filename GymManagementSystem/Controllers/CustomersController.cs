@@ -101,5 +101,9 @@ namespace GymManagementSystem.Controllers
             await _customerService.DeleteCustomerAsync(id);
             return RedirectToAction(nameof(List));
         }
+
+       
+
+        
     }
 }

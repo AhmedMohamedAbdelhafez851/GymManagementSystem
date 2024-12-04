@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http; // Add this line
 
 namespace Domains.Dtos
@@ -13,8 +14,8 @@ namespace Domains.Dtos
         public string? ProductCode { get; set; }
         public string? Description { get; set; }
 
+        [NotMapped]
         public IFormFile? Image { get; set; }
-
         public string? ImagePath { get; set; }
     }
 

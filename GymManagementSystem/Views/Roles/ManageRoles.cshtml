@@ -1,0 +1,37 @@
+﻿@model Domains.Dtos.UserDTO.ManageRolesViewModel
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style="margin-left: 9cm">
+
+
+<h2 style="font-size:medium">Manage Roles for User: @Model.UserId</h2>
+
+@if (Model.Roles != null && Model.Roles.Any())
+{
+    <form asp-action="ManageRoles" method="post">
+        @for (var i = 0; i < Model.Roles.Count; i++)
+        {
+            <div>
+                <input type="checkbox" name="Roles[@i].IsAssigned" value="true" @(Model.Roles[i].IsAssigned ? "checked" : "") />
+                <input type="hidden" name="Roles[@i].Name" value="@Model.Roles[i].Name" />
+                <label>@Model.Roles[i].Name</label>
+            </div>
+        }
+        <input type="hidden" name="UserId" value="@Model.UserId" />
+            <button class="btn btn-primary" type="submit">Save Changes</button>
+    </form>
+}
+else
+{
+    <p>No roles available.</p>
+}
+
+</div>
+

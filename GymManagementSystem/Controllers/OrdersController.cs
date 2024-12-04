@@ -1,9 +1,11 @@
 ﻿using BL.Interfaces;
 using Domains.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystem.Controllers
 {
+    [Authorize(Roles ="Trainer")]
     public class OrdersController : Controller
     {
         private readonly IOrderService _orderService;

@@ -1,41 +1,237 @@
 ﻿@model IEnumerable<Domains.Dtos.ClassDTO>
-<br />
-<br />
-<br />
-<br />
-<br />
 
 
-<h2>Class List</h2>
-<br />
-<br />
-<br />
-<br />
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Class Name</th>
-            <th>Schedule</th>
-            <th>Capacity</th>
-            <th>Trainer</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var classDto in Model)
-        {
-            <tr>
-                <td>@classDto.ClassName</td>
-                <td>@classDto.Schdule.ToString("g")</td>
-                <td>@classDto.Capacity</td>
-                <td>@classDto.Trainer?.TrainerName ?? "N/A"</td>
-                <td>
-                    <a href="/Classes/Edit/@classDto.ClassId" class="btn btn-primary">Edit</a>
-                    <a href="/Classes/Delete/@classDto.ClassId" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="container-fluid">
+    <div class="row bg-white">
+        <!-- Sidebar -->
+        <div class="col-md-3 bg-light p-0" id="sidebar">
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 mt-4">
+
+
+            <div style="background-color: white; padding: 20px; text-align: center">
+                <h2 style="font-size: 24px; font-weight: bold; color: #343a40; display: inline-flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-list-alt" style="color: #007bff; font-size: 28px;"></i>
+                    Class List
+                </h2>
+            </div>
+
+
+
+
+
+
+            <a href="@Url.Action("Create", "Classes")" class="btn btn-outline-primary px-4 py-2">
+                <i class="bi bi-plus-circle"></i> Create New Class
+            </a>
+            <br />   <br />   <br />
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Schedule</th>
+                            <th>Capacity</th>
+                            <th>Trainer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var classDto in Model)
+                        {
+                            <tr>
+                                <td>@classDto.ClassName</td>
+                                <td>@classDto.Schdule.ToString("g")</td>
+                                <td>@classDto.Capacity</td>
+                                <td>@classDto.Trainer?.TrainerName</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editClassModal"
+                                            data-id="@classDto.ClassId">
+                                        <i class="bi bi-pencil-fill"></i>
+                                        Edit
+                                    </button>
+                                    <form asp-action="Delete" asp-controller="Classes" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@classDto.ClassId" />
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash3-fill"></i>Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editClassModal" tabindex="-1" aria-labelledby="editClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editClassModalLabel">Edit Class</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editClassForm" method="post">
+                    <input type="hidden" id="ClassId" name="ClassId" />
+                    <div class="mb-3">
+                        <label for="ClassName" class="form-label">Class Name</label>
+                        <input type="text" class="form-control" id="ClassName" name="ClassName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Schdule" class="form-label">Schedule</label>
+                        <input type="datetime-local" class="form-control" id="Schdule" name="Schdule" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Capacity" class="form-label">Capacity</label>
+                        <input type="number" class="form-control" id="Capacity" name="Capacity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="TrainerId" class="form-label">Trainer</label>
+                        <select class="form-select" id="TrainerId" name="TrainerId" required>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="editClassForm" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const editModal = document.getElementById("editClassModal");
+            const editClassForm = document.getElementById("editClassForm");
+            const saveChangesButton = editModal.querySelector("button[form='editClassForm']");
+
+            let initialData = {};
+
+            editModal.addEventListener("show.bs.modal", function (event) {
+                const button = event.relatedTarget;
+                const classId = button.getAttribute("data-id");
+
+                // Fetch data and populate modal
+                fetch(`/Classes/EditModal/${classId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Received data:', data);
+
+                        // Populate form fields
+                        document.getElementById("ClassId").value = data.classDto.classId;
+                        document.getElementById("ClassName").value = data.classDto.className;
+
+                        // Convert schedule to local datetime-local format
+                        const scheduleDate = new Date(data.classDto.schdule);
+                        document.getElementById("Schdule").value = scheduleDate.toISOString().slice(0, 16);
+
+                        document.getElementById("Capacity").value = data.classDto.capacity;
+
+                        const trainerSelect = document.getElementById("TrainerId");
+                        trainerSelect.innerHTML = data.trainers.map(trainer =>
+                            `<option value="${trainer.trainerId}" ${trainer.trainerId === data.classDto.trainerId ? 'selected' : ''}>
+                                ${trainer.trainerName}
+                            </option>`
+                        ).join('');
+
+                        // Ensure trainer is set
+                        if (data.classDto.trainerId) {
+                            trainerSelect.value = data.classDto.trainerId;
+                        }
+
+                        // Store initial data for comparison
+                        initialData = {
+                            ClassId: data.classDto.classId,
+                            ClassName: document.getElementById("ClassName").value,
+                            Schdule: document.getElementById("Schdule").value,
+                            Capacity: document.getElementById("Capacity").value,
+                            TrainerId: trainerSelect.value,
+                        };
+
+                        console.log('Initial Data:', initialData);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching class data:', error);
+                        alert('Failed to load class data');
+                    });
+            });
+
+            editClassForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                // Compare current form data with initial data
+                const currentData = {
+                    ClassId: document.getElementById("ClassId").value,
+                    ClassName: document.getElementById("ClassName").value,
+                    Schdule: document.getElementById("Schdule").value,
+                    Capacity: document.getElementById("Capacity").value,
+                    TrainerId: document.getElementById("TrainerId").value,
+                };
+
+                console.log('Current Data:', currentData);
+
+                // Check if data has changed
+                if (JSON.stringify(initialData) === JSON.stringify(currentData)) {
+                    alert("No changes were made.");
+                    return;
+                }
+
+                // Prepare form data
+                const formData = {
+                    ClassId: parseInt(currentData.ClassId),
+                    ClassName: currentData.ClassName,
+                    Schdule: new Date(currentData.Schdule).toISOString(),
+                    Capacity: parseInt(currentData.Capacity),
+                    TrainerId: parseInt(currentData.TrainerId)
+                };
+
+                console.log('Sending Data:', formData);
+
+                // Send AJAX request to update
+                fetch('/Classes/Edit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(formData)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log('Server Response:', result);
+
+                        if (result.success) {
+                            // Close modal and refresh page or update row
+                            const modalInstance = bootstrap.Modal.getInstance(editModal);
+                            modalInstance.hide();
+                            location.reload(); // Simple approach to refresh data
+                        } else {
+                            alert(result.message || 'Failed to update class');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating the class');
+                    });
+            });
+        });
+    </script>
+}

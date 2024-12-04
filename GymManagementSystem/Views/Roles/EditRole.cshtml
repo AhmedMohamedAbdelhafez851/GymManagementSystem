@@ -1,0 +1,26 @@
+﻿@model Domains.Dtos.UserDTO.RoleDto
+<br />
+<br />
+<br />
+<br />
+<br />
+<h2 style="text-align:center ; font-size:medium">Edit Role</h2>
+
+<form style="margin-left: 8cm" asp-action="EditRole" method="post">
+    <div>
+        <label for="Name">Role Name</label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Update Role</button>
+</form>
+
+<form asp-action="DeleteRole" method="post" style="margin-top: 10px;">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete Role</button>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

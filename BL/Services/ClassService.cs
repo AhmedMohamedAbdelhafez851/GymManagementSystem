@@ -84,6 +84,14 @@ namespace BL.Services
 
         public void Create(ClassDTO classDto)
         {
+            // First, fetch the full trainer details
+            var trainerDto = _trainerService.GetById(classDto.TrainerId);
+
+            if (trainerDto == null)
+            {
+                throw new ArgumentException("Invalid Trainer ID");
+            }
+
             // Map `ClassDTO` to `Class` entity
             var classEntity = new Class
             {
@@ -92,19 +100,16 @@ namespace BL.Services
                 Schdule = classDto.Schdule,
                 Capacity = classDto.Capacity,
                 TrainerId = classDto.TrainerId,
-                Trainer = _trainerService.GetById(classDto.TrainerId) != null
-                    ? new Trainer
-                    {
-                        TrainerId = classDto.TrainerId,
-                        TrainerName = classDto.Trainer?.TrainerName ?? "",
-                        Specialization = classDto.Trainer?.Specialization ?? ""
-                    }
-                    : null
+                Trainer = new Trainer
+                {
+                    TrainerId = trainerDto.TrainerId,
+                    TrainerName = trainerDto.TrainerName,
+                    Specialization = trainerDto.Specialization
+                }
             };
 
             _classes.Add(classEntity);
         }
-
         public void Update(ClassDTO classDto)
         {
             var existingClass = _classes.FirstOrDefault(c => c.ClassId == classDto.ClassId);
@@ -116,17 +121,18 @@ namespace BL.Services
             existingClass.Capacity = classDto.Capacity;
             existingClass.TrainerId = classDto.TrainerId;
 
-            // Update related trainer (if any)
-            existingClass.Trainer = _trainerService.GetById(classDto.TrainerId) != null
-                ? new Trainer
+            // Fetch the full trainer information
+            var trainer = _trainerService.GetById(classDto.TrainerId);
+            if (trainer != null)
+            {
+                existingClass.Trainer = new Trainer
                 {
-                    TrainerId = classDto.TrainerId,
-                    TrainerName = classDto.Trainer?.TrainerName ?? "",
-                    Specialization = classDto.Trainer?.Specialization ?? ""
-                }
-                : null;
+                    TrainerId = trainer.TrainerId,
+                    TrainerName = trainer.TrainerName,
+                    Specialization = trainer.Specialization
+                };
+            }
         }
-
         public void Delete(int id)
         {
             var classEntity = _classes.FirstOrDefault(c => c.ClassId == id);

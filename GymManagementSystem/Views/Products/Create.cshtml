@@ -18,7 +18,7 @@
                                 <div class="col-xl-5 col-lg-6">
                                     <div class="add-product">
                                         <img id="mainProductImage" src="~/assets/images/pro3/1.jpg" alt="Product Image"
-                                             class="img-fluid image_zoom_1 blur-up lazyloaded">
+                                             class="img-fluid image_zoom_1 blur-up lazyloaded w-50">
                                         <div class="form-group mt-3">
                                             <label for="productImage">Upload Product Image</label>
                                             <input type="file" class="form-control" id="productImage" name="Image" accept="image/*"
@@ -52,7 +52,7 @@
                                                   placeholder="Enter product description">@Model?.Description</textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Add Product</button>
-                                    <a href="@Url.Action("Index", "Products")" class="btn btn-light">Cancel</a>
+                                    <a href="@Url.Action("List", "Products")" class="btn btn-light">Cancel</a>
                                 </div>
                             </div>
                         </form>

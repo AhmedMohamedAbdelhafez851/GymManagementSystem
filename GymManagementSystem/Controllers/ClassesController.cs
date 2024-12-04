@@ -37,6 +37,18 @@ namespace GymManagementSystem.Controllers
                 return View(classDto);
             }
 
+            // Fetch the trainer to ensure it's fully populated
+            var trainer = _trainerService.GetById(classDto.TrainerId);
+            if (trainer == null)
+            {
+                ModelState.AddModelError("TrainerId", "Invalid trainer selected");
+                ViewBag.Trainers = _trainerService.GetAll();
+                return View(classDto);
+            }
+
+            // Set the full trainer information
+            classDto.Trainer = trainer;
+
             _classService.Create(classDto);
             return RedirectToAction(nameof(List));
         }
@@ -51,12 +63,24 @@ namespace GymManagementSystem.Controllers
             var trainers = _trainerService.GetAll();
             return Json(new { classDto, trainers });
         }
-
         [HttpPost]
-        public IActionResult Edit(ClassDTO classDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromBody] ClassDTO classDto)
         {
             if (!ModelState.IsValid)
                 return Json(new { success = false, message = "Invalid input" });
+
+            // Fetch the trainer to ensure it's included
+            var trainer = _trainerService.GetById(classDto.TrainerId);
+            if (trainer != null)
+            {
+                classDto.Trainer = new TrainerDTO
+                {
+                    TrainerId = trainer.TrainerId,
+                    TrainerName = trainer.TrainerName,
+                    Specialization = trainer.Specialization
+                };
+            }
 
             _classService.Update(classDto);
             return Json(new { success = true });

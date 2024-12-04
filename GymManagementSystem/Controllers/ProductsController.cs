@@ -2,9 +2,12 @@
 using BL.Interfaces;
 using Domains.Dtos;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymManagementSystem.Controllers
 {
+    [Authorize]
+
     public class ProductsController : Controller
     {
         private readonly IProductService _productService;

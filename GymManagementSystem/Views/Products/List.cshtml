@@ -1,47 +1,64 @@
 ﻿@model IEnumerable<Domains.Dtos.ProductDTO>
+<br />
+<br />
+<br />
+<br />
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css">
-<!-- SweetAlert2 CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-<div class="container mt-4">
-    <h2>Products List</h2>
-    <br />
-    <br />
-    <a asp-action="Create" class="btn btn-primary mb-3">Add Product</a>
-    <table class="table table-bordered" id="productTable">
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Product Code</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model)
-            {
-                <tr data-id="@product.ProductId">
-                    <td>
-                        <img src="@Url.Content(product.ImagePath ?? "/images/default-placeholder.png")?v=@DateTime.Now.Ticks"
-                             alt="Product Image" style="width: 50px; height: auto;" />
-
-
-                    </td>
-                    <td>@product.Title</td>
-                    <td>@product.Price</td>
-                    <td>@product.ProductCode</td>
-                    <td>
-                        <button class="btn btn-warning edit-btn" data-id="@product.ProductId">Edit</button>
-                        <button class="btn btn-danger delete-btn" data-id="@product.ProductId">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 bg-light p-0 d-none d-md-block" id="sidebar">
+            <!-- Include shared layout sidebar here -->
+        </div>
+        <br /><br /><br />
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div style="background-color: white; padding: 20px; text-align: center">
+                <div style="background-color: white; padding: 20px; text-align: center">
+                    <h2 style="font-size: 24px; font-weight: bold; color: #343a40; display: inline-flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-list-alt" style="color: #007bff; font-size: 28px;"></i>
+                        Products List
+                    </h2>
+                </div>
+            </div>
+            <br /><br />
+            <a asp-action="Create" class="btn btn-primary mb-3">
+                <i class="bi bi-plus-circle"></i>
+                Add Product
+            </a>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="productTable">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Product Code</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr data-id="@product.ProductId">
+                                <td>
+                                    <img src="@Url.Content(product.ImagePath ?? "/images/default-placeholder.png")?v=@DateTime.Now.Ticks"
+                                         alt="Product Image" style="width: 50px; height: auto;" />
+                                </td>
+                                <td>@product.Title</td>
+                                <td>@product.Price</td>
+                                <td>@product.ProductCode</td>
+                                <td>
+                                    <button class="btn btn-warning edit-btn" data-id="@product.ProductId">Edit</button>
+                                    <button class="btn btn-danger delete-btn" data-id="@product.ProductId">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Edit Modal -->
@@ -51,35 +68,34 @@
             <form id="editForm" asp-action="Edit" asp-controller="Products" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Edit Product</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="ProductId" name="ProductId" />
-                    <div class="form-group">
-                        <label for="Title">Title</label>
+                    <div class="mb-3">
+                        <label for="Title" class="form-label">Title</label>
                         <input type="text" class="form-control" id="Title" name="Title" />
                     </div>
-                    <div class="form-group">
-                        <label for="Price">Price</label>
+                    <div class="mb-3">
+                        <label for="Price" class="form-label">Price</label>
                         <input type="number" class="form-control" id="Price" name="Price" />
                     </div>
-                    <div class="form-group">
-                        <label for="ProductCode">Product Code</label>
+                    <div class="mb-3">
+                        <label for="ProductCode" class="form-label">Product Code</label>
                         <input type="text" class="form-control" id="ProductCode" name="ProductCode" />
                     </div>
-                    <div class="form-group">
-                        <label for="ImagePath">Image</label>
+                    <div class="mb-3">
+                        <label for="ImagePath" class="form-label">Image</label>
                         <input type="file" class="form-control" id="Image" name="Image" />
+                        <img id="imagePreview" class="mt-2" style="width: 100px; height: auto;" />
                     </div>
-                    <div class="form-group">
-                        <label for="Description">Description</label>
+                    <div class="mb-3">
+                        <label for="Description" class="form-label">Description</label>
                         <textarea class="form-control" id="Description" name="Description"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
@@ -88,14 +104,10 @@
 </div>
 
 @section Scripts {
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
             // Edit button click handler
@@ -107,6 +119,11 @@
                     $('#editForm #Price').val(product.price);
                     $('#editForm #ProductCode').val(product.productCode);
                     $('#editForm #Description').val(product.description);
+
+                    // Update image preview
+                    var imagePath = product.imagePath || "/images/default-placeholder.png";
+                    $('#editForm #imagePreview').attr('src', imagePath);
+
                     $('#editModal').modal('show');
                 });
             });
@@ -147,6 +164,18 @@
             // Initialize DataTables
             $('#productTable').DataTable({
                 responsive: true
+            });
+
+            // Image preview for uploaded files
+            $('#Image').on('change', function () {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#imagePreview').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
         });
     </script>

@@ -16,7 +16,7 @@ namespace BL.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
-
+        public DbSet<Attendance> Attendances { get; set; } // Added DbSet
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

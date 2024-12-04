@@ -1,0 +1,89 @@
+﻿@model Domains.Dtos.UserDTO.LoginViewModel
+<br />
+<br />
+<br />
+<br />
+<h2 class="text-center">Login</h2>
+
+<!-- Login Form (Email and Password) -->
+<form style="margin-left: 8cm" asp-action="Login" method="post" class="login-form">
+    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" type="password" placeholder="Enter your password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group form-check">
+        <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+        <label asp-for="RememberMe" class="form-check-label">Remember Me</label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+</form>
+
+<!-- Face Recognition Login -->
+<h3 class="text-center mt-4">Or Login Using Face Recognition</h3>
+<div class="camera-container">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <button id="capture" class="btn btn-secondary btn-block mt-2">Capture & Login</button>
+</div>
+
+@section Scripts {
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const captureButton = document.getElementById("capture");
+
+        navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error("Error accessing camera:", error);
+            });
+
+        captureButton.addEventListener("click", () => {
+            const context = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imageData = canvas.toDataURL("image/png");
+
+            fetch(`/Account/LoginWithFaceRecognition?returnUrl=${encodeURIComponent('@ViewData["ReturnUrl"]')}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ imageData: imageData })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        alert(data.message || "Face recognition failed.");
+                    }
+                })
+                .catch(error => console.error("Error during face recognition:", error));
+        });
+    </script>
+}
+
+<style>
+    .camera-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    video {
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+</style>
